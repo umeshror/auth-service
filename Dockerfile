@@ -37,16 +37,4 @@ RUN pipenv install --skip-lock --system --dev
 EXPOSE 8000
 CMD gunicorn config.wsgi:application --bind 0.0.0.0:8000
 
-# EXPOSE 8888
-# CMD gunicorn config.wsgi:application --bind 0.0.0.0:8888
-
-# docker build -t auth-service -f Dockerfile .
-# docker run -it -p 80:8888 auth-service
-
-#EXPOSE 8000
-#ENTRYPOINT ["python", "manage.py"]
-#CMD ["runserver", "0.0.0.0:8000"]
-
-#docker run -it -p 80:8000 auth-service
-
 
