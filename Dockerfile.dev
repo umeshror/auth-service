@@ -1,4 +1,4 @@
-# Base Image
+# Base Image for dev version with SQLLITE
 FROM python:3.7
 
 # create and set working directory
