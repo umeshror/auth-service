@@ -12,7 +12,6 @@ ADD . /app/
 ENV PYTHONUNBUFFERED 1
 ENV LANG C.UTF-8
 ENV DJANGO_SETTINGS_MODULE=config.settings
-ENV ENV=local
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
