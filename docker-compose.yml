@@ -3,17 +3,14 @@ version: "3.2"
 services:
   mysql:
     image: mysql:5.7
-    environment:
-      # overwritten by .env file
-      MYSQL_ROOT_PASSWORD: admin123
-      MYSQL_DATABASE: admin_db
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin123
     env_file:
       - .env
     ports:
       - 3306:3306
+    volumes:
+      - ./mysql_data:/var/lib/mysql
   app:
+    image: app
     build:
       context: .
       dockerfile: Dockerfile
@@ -23,5 +20,27 @@ services:
       - .:/app
     depends_on:
       - mysql
+      - migration
+#      - collectstatic
     ports:
       - 8000:8000
+  migration:
+    image: app
+    command: python manage.py migrate --noinput
+    volumes:
+      - .:/app
+    depends_on:
+      - mysql
+    env_file:
+      - .env
+  collectstatic:
+    image: app
+    command: python manage.py collectstatic --noinput
+    volumes:
+      - .:/app
+    depends_on:
+      - app
+    env_file:
+      - .env
+volumes:
+  mysql_data:
