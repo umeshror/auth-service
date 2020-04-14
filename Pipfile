@@ -10,6 +10,7 @@ django = "==2.2.10"
 gunicorn = "*"
 mysqlclient = "==1.4.6"
 pymysql = "*"
+djangorestframework = "*"
 
 [requires]
 python_version = "3.7"
