@@ -39,11 +39,16 @@ INSTALLED_APPS = [
 
     # Third-Party Apps
     'rest_framework',
+    'rest_framework.authtoken',
 
     # Local Apps
     'apps.core'
 ]
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
