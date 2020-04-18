@@ -124,6 +124,6 @@ class TestOAuth2(APITestCase):
                                       'last_name': "test_last_name",
                                       'password': 'admin123',
                                       'username': "test_username2"})
-        content = json.loads(response.content.decode("utf-8"))
+        content = json.loads(resp.content.decode("utf-8"))
         self.assertEqual(resp.status_code, 403)
         self.assertEqual(content['detail'], "You do not have permission to perform this action.")
