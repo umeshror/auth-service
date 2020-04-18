@@ -44,10 +44,18 @@ class TestOAuth2(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content.decode("utf-8"))
-
+        # get should pass as default scope will be set READ and WRITE
         resp = self.client.get(reverse('users-list'),
                                HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']))
         self.assertEqual(resp.status_code, 200, resp.content)
+        # write should pass as default scope will be set READ and WRITE
+        resp = self.client.post(reverse('users-list'),
+                                HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']),
+                                data={'first_name': "test_name",
+                                      'last_name': "test_last_name",
+                                      'password': 'admin123',
+                                      'username': "test_username2"})
+        self.assertEqual(resp.status_code, 201)
 
     def test_get_access_token_fail(self):
         """
@@ -87,3 +95,35 @@ class TestOAuth2(APITestCase):
         resp = self.client.get(reverse('users-list'),
                                HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']))
         self.assertEqual(resp.status_code, 200, resp.content)
+
+    def test_restricted_access(self):
+        """
+        Get Access token with client_id, client_secret and credentials
+        :return:
+        """
+        data = {'client_id': self.application.client_id,
+                'client_secret': self.application.client_secret,
+                'grant_type': 'password',
+                'scope': 'read',
+                'username': self.user.username,
+                'password': 'admin123'}
+
+        response = self.client.post(reverse("oauth2_provider:token"), data=data)
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content.decode("utf-8"))
+        # read should be successful
+        resp = self.client.get(reverse('users-list'),
+                               HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']))
+        self.assertEqual(resp.status_code, 200, resp.content)
+
+        # write should be fail
+        resp = self.client.post(reverse('users-list'),
+                                HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']),
+                                data={'first_name': "test_name",
+                                      'last_name': "test_last_name",
+                                      'password': 'admin123',
+                                      'username': "test_username2"})
+        content = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(content['detail'], "You do not have permission to perform this action.")

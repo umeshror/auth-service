@@ -60,6 +60,10 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # To keep the Browsable API
     'oauth2_provider.backends.OAuth2Backend'
 )
+OAUTH2_PROVIDER = {
+    'SCOPES': {'read': 'Read scope',
+               'write': 'Write scope'}
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
