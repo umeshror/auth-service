@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.models import User
 from django.urls import reverse
 from oauth2_provider.models import Application
