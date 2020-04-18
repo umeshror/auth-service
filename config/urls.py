@@ -22,9 +22,10 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     # path('api', include('apps.core.urls')),
-    url('api/', include('apps.core.urls')),
+    url('api/', include('apps.core.urls'), name='api_urls'),
     # auth
     path('auth-token/', obtain_auth_token, name='api_token_auth'),
+    #admin
     path('admin/', admin.site.urls),
 ]
 
