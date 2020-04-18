@@ -25,8 +25,11 @@ urlpatterns = [
     url('api/', include('apps.core.urls'), name='api_urls'),
     # auth
     path('auth-token/', obtain_auth_token, name='api_token_auth'),
-    #admin
+    # admin
     path('admin/', admin.site.urls),
+    #oauth2_provider
+    path('oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

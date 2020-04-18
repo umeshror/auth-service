@@ -4,10 +4,18 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name')
+        fields = ('id', 'username', 'password')
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
 
 class UserViewSet(ModelViewSet):

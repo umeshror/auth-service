@@ -11,6 +11,7 @@ gunicorn = "*"
 mysqlclient = "==1.4.6"
 pymysql = "*"
 djangorestframework = "*"
+django-oauth-toolkit = "*"
 
 [requires]
 python_version = "3.7"
