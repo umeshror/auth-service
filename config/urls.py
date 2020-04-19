@@ -19,15 +19,20 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
 
 urlpatterns = [
     # path('api', include('apps.core.urls')),
     url('api/', include('apps.core.urls'), name='api_urls'),
     # auth
     path('auth-token/', obtain_auth_token, name='api_token_auth'),
+    # jwt
+    path('jwt/token/', TokenObtainPairView.as_view(), name='jwt_token_obtain_pair'),
+    path('jwt/token/refresh/', TokenRefreshView.as_view(), name='jwt_token_refresh'),
+    path('jwt/token/verify/', TokenVerifyView.as_view(), name='jwt_token_verify'),
     # admin
     path('admin/', admin.site.urls),
-    #oauth2_provider
+    # oauth2_provider
     path('oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
 ]

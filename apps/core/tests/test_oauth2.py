@@ -49,7 +49,7 @@ class TestOAuth2(APITestCase):
         # get should pass as default scope will be set READ and WRITE
         resp = self.client.get(reverse('users-list'),
                                HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']))
-        self.assertEqual(resp.status_code, 200, resp.content)
+        self.assertEqual(resp.status_code, 200)
         # write should pass as default scope will be set READ and WRITE
         resp = self.client.post(reverse('users-list'),
                                 HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']),
@@ -114,12 +114,12 @@ class TestOAuth2(APITestCase):
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content.decode("utf-8"))
         # read should be successful
-        resp = self.client.get(reverse('users-list'),
+        resp = self.client.get(reverse('groups-list'),
                                HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']))
         self.assertEqual(resp.status_code, 200, resp.content)
 
         # write should be fail
-        resp = self.client.post(reverse('users-list'),
+        resp = self.client.post(reverse('groups-list'),
                                 HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']),
                                 data={'first_name': "test_name",
                                       'last_name': "test_last_name",
