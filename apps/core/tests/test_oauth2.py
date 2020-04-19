@@ -1,8 +1,10 @@
+import datetime
 import json
 
 from django.contrib.auth.models import User
 from django.urls import reverse
-from oauth2_provider.models import Application
+from django.utils import timezone
+from oauth2_provider.models import Application, AccessToken
 from rest_framework.test import APITestCase
 
 
@@ -99,7 +101,6 @@ class TestOAuth2(APITestCase):
     def test_restricted_access(self):
         """
         Get Access token with client_id, client_secret and credentials
-        :return:
         """
         data = {'client_id': self.application.client_id,
                 'client_secret': self.application.client_secret,
@@ -127,3 +128,22 @@ class TestOAuth2(APITestCase):
         content = json.loads(resp.content.decode("utf-8"))
         self.assertEqual(resp.status_code, 403)
         self.assertEqual(content['detail'], "You do not have permission to perform this action.")
+
+    def test_revoke_access_token(self):
+        """
+        """
+        tok = AccessToken.objects.create(user=self.user,
+                                         token='1234567890',
+                                         application=self.application,
+                                         expires=timezone.now() + datetime.timedelta(days=1),
+                                         scope='read write')
+        data = {
+            'client_id': self.application.client_id,
+            'client_secret': self.application.client_secret,
+            'token': tok.token,
+        }
+        response = self.client.post(reverse("oauth2_provider:revoke-token"), data=data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b'')
+        self.assertFalse(AccessToken.objects.filter(id=tok.id).exists())
