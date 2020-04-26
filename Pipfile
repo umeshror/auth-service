@@ -6,13 +6,14 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-django = "==3.0.51"
-gunicorn = "*"
+django = "==2.2"
 mysqlclient = "==1.4.6"
 pymysql = "*"
 djangorestframework = "*"
 django-oauth-toolkit = "*"
 djangorestframework-simplejwt = "*"
+gunicorn = "*"
+phonenumbers = "*"
 
 [requires]
 python_version = "3.7"

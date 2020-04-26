@@ -1,8 +1,10 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
+
+from apps.core.models import User
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

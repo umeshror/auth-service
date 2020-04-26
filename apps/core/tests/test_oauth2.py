@@ -1,11 +1,12 @@
 import datetime
 import json
 
-from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
 from oauth2_provider.models import Application, AccessToken
 from rest_framework.test import APITestCase
+
+from apps.core.models import User
 
 
 class TestOAuth2(APITestCase):
@@ -13,6 +14,7 @@ class TestOAuth2(APITestCase):
         self.user = User.objects.create_user(first_name="test_name",
                                              last_name="test_last_name",
                                              password='admin123',
+                                             phone_number='+911234567890',
                                              username="test_username")
 
         self.application = Application(
