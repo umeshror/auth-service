@@ -52,14 +52,6 @@ class TestOAuth2(APITestCase):
         resp = self.client.get(reverse('users-list'),
                                HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']))
         self.assertEqual(resp.status_code, 200)
-        # write should pass as default scope will be set READ and WRITE
-        resp = self.client.post(reverse('users-list'),
-                                HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']),
-                                data={'first_name': "test_name",
-                                      'last_name': "test_last_name",
-                                      'password': 'admin123',
-                                      'username': "test_username2"})
-        self.assertEqual(resp.status_code, 201)
 
     def test_get_access_token_fail(self):
         """
