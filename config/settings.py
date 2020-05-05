@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import os
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -107,15 +108,32 @@ if ENV == 'local':
         }
     }
 else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.environ.get('MYSQL_DATABASE', 'auth_db'),
-            'USER': os.environ.get('MYSQL_USER', 'auth_admin'),
-            'PASSWORD': os.environ.get('MYSQL_ROOT_PASSWORD', 'Monday#123'),
-            'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
-            'PORT': os.environ.get('MYSQL_PORT', '3306')}
-    }
+    if 'postgres' == os.environ.get('DB'):
+        DATABASES = {
+            'default': {
+                'ENGINE': os.environ.get('DB_ENGINE'),
+                'NAME': os.environ.get('DB_DATABASE_NAME'),
+                'USER': os.environ.get('DB_USERNAME'),
+                'PASSWORD': os.environ.get('DB_PASSWORD'),
+                'HOST': os.environ.get('DB_HOST'),
+                'PORT': os.environ.get('DB_PORT'),
+            }
+        }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': os.environ.get('MYSQL_DATABASE', 'auth_db'),
+                'USER': os.environ.get('MYSQL_USER', 'auth_admin'),
+                'PASSWORD': os.environ.get('MYSQL_ROOT_PASSWORD', 'Monday#123'),
+                'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
+                'PORT': os.environ.get('MYSQL_PORT', '3306')}
+        }
+
+if ENV == 'heroku':
+    db_from_env = dj_database_url.config()
+    DATABASES['default'].update(db_from_env)
+    DATABASES['default']['CONN_MAX_AGE'] = 500
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
