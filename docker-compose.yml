@@ -22,8 +22,10 @@ services:
       - mysql
       - migration
 #      - collectstatic
-    ports:
-      - 8000:8000
+    expose:
+      - 8000
+#    ports:
+#      - 8000:8000
   migration:
     image: app
     command: python manage.py migrate --noinput
