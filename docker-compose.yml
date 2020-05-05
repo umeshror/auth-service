@@ -42,5 +42,11 @@ services:
       - app
     env_file:
       - .env
+  nginx:
+    build: ./config/nginx
+    ports:
+      - 8000:80
+    depends_on:
+      - app
 volumes:
   mysql_data:
