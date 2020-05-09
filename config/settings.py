@@ -77,6 +77,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -125,11 +127,11 @@ else:
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql',
-                'NAME': os.environ.get('MYSQL_DATABASE', 'auth_db'),
-                'USER': os.environ.get('MYSQL_USER', 'auth_admin'),
-                'PASSWORD': os.environ.get('MYSQL_ROOT_PASSWORD', 'Monday#123'),
-                'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
-                'PORT': os.environ.get('MYSQL_PORT', '3306')}
+                'NAME': os.environ.get('MYSQL_DATABASE'),
+                'USER': os.environ.get('MYSQL_USER'),
+                'PASSWORD': os.environ.get('MYSQL_ROOT_PASSWORD'),
+                'HOST': os.environ.get('MYSQL_HOST'),
+                'PORT': os.environ.get('MYSQL_PORT')}
         }
 
 if ENV == 'heroku':
@@ -173,6 +175,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
