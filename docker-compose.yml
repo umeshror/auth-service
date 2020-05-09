@@ -20,19 +20,15 @@ services:
       - .:/app
     depends_on:
       - mysql
-      - migration
-#      - collectstatic
     expose:
       - 8000
-#    ports:
-#      - 8000:8000
   migration:
     image: app
     command: python manage.py migrate --noinput
     volumes:
       - .:/app
     depends_on:
-      - mysql
+      - app
     env_file:
       - .env
   collectstatic:
@@ -47,6 +43,8 @@ services:
   nginx:
     build: ./config/nginx
     ports:
+#      - 80:80 # upstram is routing to appserver nginx.cong
+#      - 80:8000
       - 8000:80
     depends_on:
       - app
