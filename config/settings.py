@@ -111,7 +111,7 @@ else:
     if 'postgres' == os.environ.get('DB'):
         DATABASES = {
             'default': {
-                'ENGINE': os.environ.get('DB_ENGINE'),
+                'ENGINE': 'django.db.backends.postgresql_psycopg2',
                 'NAME': os.environ.get('DB_DATABASE_NAME'),
                 'USER': os.environ.get('DB_USERNAME'),
                 'PASSWORD': os.environ.get('DB_PASSWORD'),

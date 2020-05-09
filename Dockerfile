@@ -27,7 +27,7 @@ WORKDIR /app
 
 # install environment dependencies
 RUN pip3 install --upgrade pip
-RUN pip3 install pipenv
+RUN pip3 install psycopg2 pipenv
 
 COPY Pipfile .
 COPY Pipfile.lock .
