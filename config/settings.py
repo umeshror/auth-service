@@ -29,7 +29,7 @@ ENV = os.environ.get('ENV', True)
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 HEROKU_DOMAIN = os.environ.get('HEROKU_DOMAIN')
 if HEROKU_DOMAIN:
-    ALLOWED_HOSTS += HEROKU_DOMAIN
+    ALLOWED_HOSTS.append(HEROKU_DOMAIN)
 # Application definition
 
 INSTALLED_APPS = [
