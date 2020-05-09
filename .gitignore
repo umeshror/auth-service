@@ -4,7 +4,7 @@
 __pycache__/
 media
 .idea/
-.env
+env/
 *.pyo
 *.db
 *.project
@@ -13,3 +13,5 @@ media
 build
 logs
 CACHE
+staticfiles/
+mysql_data/

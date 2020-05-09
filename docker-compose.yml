@@ -4,7 +4,7 @@ services:
   mysql:
     image: mysql:5.7
     env_file:
-      - .env
+      - env/.env
     ports:
       - 3306:3306
     volumes:
@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - .env
+      - env/.env
     volumes:
       - .:/app
     depends_on:
@@ -30,7 +30,7 @@ services:
     depends_on:
       - app
     env_file:
-      - .env
+      - env/.env
   collectstatic:
     image: app
     command: python manage.py collectstatic --noinput
@@ -39,7 +39,7 @@ services:
     depends_on:
       - app
     env_file:
-      - .env
+      - env/.env
   nginx:
     build: ./config/nginx
     ports:

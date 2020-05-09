@@ -20,14 +20,16 @@ PROJECT_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardi
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'u5x+l6m0(si47=p7#s-+9ql*9um=#ey@@^%md4xjcrb(l815yx')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', True)
 ENV = os.environ.get('ENV', True)
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+HEROKU_DOMAIN = os.environ.get('HEROKU_DOMAIN')
+if HEROKU_DOMAIN:
+    ALLOWED_HOSTS += HEROKU_DOMAIN
 # Application definition
 
 INSTALLED_APPS = [
@@ -173,4 +175,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
