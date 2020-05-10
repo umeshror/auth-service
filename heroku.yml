@@ -8,3 +8,6 @@ release:
   command:
     - python manage.py migrate --noinput
     - python manage.py collectstatic --noinput
+  build:
+    config:
+      DJANGO_SETTINGS_MODULE: config.heroku_settings
