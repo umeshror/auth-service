@@ -27,9 +27,6 @@ DEBUG = os.environ.get('DEBUG', True)
 ENV = os.environ.get('ENV', True)
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-HEROKU_DOMAIN = os.environ.get('HEROKU_DOMAIN')
-if HEROKU_DOMAIN:
-    ALLOWED_HOSTS.append(HEROKU_DOMAIN)
 # Application definition
 
 INSTALLED_APPS = [
@@ -77,8 +74,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -112,32 +107,15 @@ if ENV == 'local':
         }
     }
 else:
-    if 'postgres' == os.environ.get('DB'):
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.postgresql_psycopg2',
-                'NAME': os.environ.get('DB_DATABASE_NAME'),
-                'USER': os.environ.get('DB_USERNAME'),
-                'PASSWORD': os.environ.get('DB_PASSWORD'),
-                'HOST': os.environ.get('DB_HOST'),
-                'PORT': os.environ.get('DB_PORT'),
-            }
-        }
-    else:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.mysql',
-                'NAME': os.environ.get('MYSQL_DATABASE'),
-                'USER': os.environ.get('MYSQL_USER'),
-                'PASSWORD': os.environ.get('MYSQL_ROOT_PASSWORD'),
-                'HOST': os.environ.get('MYSQL_HOST'),
-                'PORT': os.environ.get('MYSQL_PORT')}
-        }
-
-if ENV == 'heroku':
-    db_from_env = dj_database_url.config()
-    DATABASES['default'].update(db_from_env)
-    DATABASES['default']['CONN_MAX_AGE'] = 500
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('MYSQL_DATABASE'),
+            'USER': os.environ.get('MYSQL_USER'),
+            'PASSWORD': os.environ.get('MYSQL_ROOT_PASSWORD'),
+            'HOST': os.environ.get('MYSQL_HOST'),
+            'PORT': os.environ.get('MYSQL_PORT')}
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
