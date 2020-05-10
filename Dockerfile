@@ -4,7 +4,7 @@ FROM python:3.7
 # set default environment variables
 ENV PYTHONUNBUFFERED 1
 ENV LANG C.UTF-8
-ENV DJANGO_SETTINGS_MODULE=config.settings
+#ENV DJANGO_SETTINGS_MODULE=config.settings
 
 
 # Install system dependencies
