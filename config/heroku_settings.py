@@ -1,6 +1,5 @@
 from config.settings import *
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 HEROKU_DOMAIN = os.environ.get('HEROKU_DOMAIN')
 if HEROKU_DOMAIN:
     ALLOWED_HOSTS.append(HEROKU_DOMAIN)
@@ -19,7 +18,7 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT'),
     }
 }
-
-db_from_env = dj_database_url.config()
-DATABASES['default'].update(db_from_env)
-DATABASES['default']['CONN_MAX_AGE'] = 500
+if ENV == 'heroku':
+    db_from_env = dj_database_url.config()
+    DATABASES['default'].update(db_from_env)
+    DATABASES['default']['CONN_MAX_AGE'] = 500
