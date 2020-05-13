@@ -4,7 +4,7 @@ build:
   config:
     DJANGO_SETTINGS_MODULE: config.heroku_settings
 run:
-  web: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+  web: gunicorn config.wsgi:application --bind 0.0.0.0:8000
 release:
   image: web
   command:
