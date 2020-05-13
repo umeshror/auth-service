@@ -5,7 +5,7 @@ import sys
 
 
 def main():
-    print(os.environ.get('DJANGO_SETTINGS_MODULE'))
+
     if os.environ.get('DJANGO_SETTINGS_MODULE') is None:
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 

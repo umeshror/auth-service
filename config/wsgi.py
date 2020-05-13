@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/2.2/howto/deployment/wsgi/
 import os
 
 from django.core.wsgi import get_wsgi_application
-print(os.environ.get('DJANGO_SETTINGS_MODULE'))
+
 if os.environ.get('DJANGO_SETTINGS_MODULE') is None:
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
