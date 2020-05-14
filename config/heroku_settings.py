@@ -18,7 +18,7 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT'),
     }
 }
-if "DATABASE_URL" in env:
+if os.environ.get('DATABASE_URL'):
     db_from_env = dj_database_url.config()
     DATABASES['default'].update(db_from_env)
     DATABASES['default']['CONN_MAX_AGE'] = 500
