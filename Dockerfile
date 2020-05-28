@@ -4,7 +4,8 @@ FROM python:3.7
 # set default environment variables
 ENV PYTHONUNBUFFERED 1
 ENV LANG C.UTF-8
-ENV DJANGO_SETTINGS_MODULE=config.heroku_settings
+ENV DJANGO_SETTINGS_MODULE=config.settings
+ENV DB=mysql
 
 
 # Install system dependencies
@@ -34,13 +35,15 @@ COPY Pipfile.lock .
 
 RUN pipenv install --system --ignore-pipfile
 
+# copy docker-entrypoint.sh
+COPY ./docker-entrypoint.sh ./docker-entrypoint.sh
 
 # Add current directory code to working directory
-ADD . /app/
+ADD . .
 EXPOSE 8000
 
-CMD gunicorn config.wsgi:application --bind 0.0.0.0:8000
-#CMD python manage.py runserver 0.0.0.0:8000
+#ENTRYPOINT ["./docker-entrypoint.sh"]
 
-#CMD gunicorn config.wsgi:application
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:8000
+#ENTRYPOINT ["./docker-entrypoint.sh"]
 

@@ -20,6 +20,8 @@ services:
       - .:/app
     depends_on:
       - mysql
+#    ports:
+#      - 8000:8000
     expose:
       - 8000
   migration:
@@ -45,7 +47,7 @@ services:
     ports:
 #      - 80:80 # upstram is routing to appserver nginx.cong
 #      - 80:8000
-      - 8000:80
+      - 8080:80
     depends_on:
       - app
 volumes:
