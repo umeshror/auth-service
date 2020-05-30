@@ -1,6 +1,8 @@
 # Base Image for dev version with SQLLITE
 FROM python:3.7
 
+MAINTAINER Umesh Saruk
+
 # set default environment variables
 ENV PYTHONUNBUFFERED 1
 ENV LANG C.UTF-8
@@ -42,8 +44,10 @@ COPY ./docker-entrypoint.sh ./docker-entrypoint.sh
 ADD . .
 EXPOSE 8000
 
+#RUN python manage.py migrate
+#RUN python manage.py collectstatic
+
 #ENTRYPOINT ["./docker-entrypoint.sh"]
 
 CMD gunicorn config.wsgi:application --bind 0.0.0.0:8000
-#ENTRYPOINT ["./docker-entrypoint.sh"]
 
