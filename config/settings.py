@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import os
+
 import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -27,6 +28,7 @@ DEBUG = os.environ.get('DEBUG', True)
 ENV = os.environ.get('ENV', True)
 
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 ALLOWED_HOSTS = ['*']
 # Application definition
 
@@ -101,7 +103,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 
-if os.environ.get('DB') == 'postgres':
+if os.environ.get('DATABASE') == 'postgres':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -112,7 +114,7 @@ if os.environ.get('DB') == 'postgres':
             'PORT': os.environ.get('DB_PORT'),
         }
     }
-elif os.environ.get('DB') == 'mysql':
+elif os.environ.get('DATABASE') == 'mysql':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',

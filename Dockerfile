@@ -4,10 +4,11 @@ FROM python:3.7
 MAINTAINER Umesh Saruk
 
 # set default environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+
 ENV LANG C.UTF-8
 ENV DJANGO_SETTINGS_MODULE=config.settings
-ENV DB=mysql
 
 
 # Install system dependencies
@@ -46,8 +47,8 @@ EXPOSE 8000
 
 #RUN python manage.py migrate
 #RUN python manage.py collectstatic
+#CMD gunicorn config.wsgi:application --bind 0.0.0.0:8000
 
-#ENTRYPOINT ["./docker-entrypoint.sh"]
+ENTRYPOINT ["sh", "./docker-entrypoint.sh"]
 
-CMD gunicorn config.wsgi:application --bind 0.0.0.0:8000
 
