@@ -18,6 +18,7 @@ services:
       - .env/.env.dev
     volumes:
       - .:/app
+      - static_data:/app/staticfiles
     depends_on:
       - mysql
     expose:
@@ -46,5 +47,11 @@ services:
       - 80:80
     depends_on:
       - app
+
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+#      - ./config/nginx:/etc/nginx/conf.d
+      - static_data:/app/staticfiles:ro # ro : read only
 volumes:
   mysql_data:
+  static_data:

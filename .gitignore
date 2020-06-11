@@ -15,3 +15,8 @@ logs
 CACHE
 staticfiles/
 mysql_data/
+.ignore/
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
