@@ -18,29 +18,11 @@ services:
       - .env/.env.dev
     volumes:
       - .:/app
-      - static_data:/app/staticfiles
+      - static_data:/srv
     depends_on:
       - mysql
     expose:
       - 8000
-  migration:
-    image: app
-    command: python manage.py migrate --noinput
-    volumes:
-      - .:/app
-    depends_on:
-      - app
-    env_file:
-      - .env/.env.dev
-  collectstatic:
-    image: app
-    command: python manage.py collectstatic --noinput
-    volumes:
-      - .:/app
-    depends_on:
-      - app
-    env_file:
-      - .env/.env.dev
   nginx:
     build: ./config/nginx
     ports:
@@ -51,7 +33,7 @@ services:
     volumes:
       - ./mysql_data:/var/lib/mysql
 #      - ./config/nginx:/etc/nginx/conf.d
-      - static_data:/app/staticfiles:ro # ro : read only
+      - static_data:/srv:ro  # ro readonly
 volumes:
   mysql_data:
   static_data:
