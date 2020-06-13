@@ -4,7 +4,7 @@ services:
   mysql:
     image: mysql:5.7
     env_file:
-      - .env/.env.dev
+      - env/.env.dev
     ports:
       - 3306:3306
     volumes:
@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - .env/.env.dev
+      - env/.env.dev
     volumes:
       - .:/app
       - static_data:/srv
