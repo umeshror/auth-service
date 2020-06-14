@@ -19,5 +19,5 @@ python manage.py collectstatic --noinput
 echo "Database migrations"
 python manage.py migrate --noinput
 
-gunicorn config.wsgi:application --bind 0.0.0.0:8000
+gunicorn --reload config.wsgi:application --bind 0.0.0.0:8000
 

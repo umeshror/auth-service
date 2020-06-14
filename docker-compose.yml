@@ -10,7 +10,6 @@ services:
     volumes:
       - ./mysql_data:/var/lib/mysql
   app:
-    image: app
     build:
       context: .
       dockerfile: Dockerfile
@@ -29,7 +28,6 @@ services:
       - 80:80
     depends_on:
       - app
-
     volumes:
       - ./mysql_data:/var/lib/mysql
 #      - ./config/nginx:/etc/nginx/conf.d
