@@ -20,4 +20,3 @@ mysql_data/
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
-db.sqlite3
