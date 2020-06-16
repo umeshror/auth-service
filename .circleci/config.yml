@@ -32,34 +32,28 @@ jobs:
             sudo pip install --upgrade setuptools
             sudo pip install awsebcli --upgrade
 
-  test:
-    - run:
-        name: Test
-        command: python manage.py test
+      - run:
+          name: Test
+          command: python manage.py test
 
-  docker-build-push:
-    - run:
-        name: Build
-        command: docker build -t umeshvjti/auth-service:latest .
+      - run:
+          name: Build
+          command: docker build -t umeshvjti/auth-service:latest .
 
-    - run:
-        name: Push
-        command: |
-          docker login -u$DOCKER_USER -p$DOCKER_PASS
-          docker tag umeshvjti/auth-service:latest umeshvjti/auth-service:${CIRCLE_SHA1}
-          docker push umeshvjti/auth-service:latest
-          docker push umeshvjti/auth-service:${CIRCLE_SHA1}
-  aws-deploy:
-    - run:
-        name: Deploy
-        command: |
-          eb deploy
+      - run:
+          name: Push
+          command: |
+            docker login -u$DOCKER_USER -p$DOCKER_PASS
+            docker tag umeshvjti/auth-service:latest umeshvjti/auth-service:${CIRCLE_SHA1}
+            docker push umeshvjti/auth-service:latest
+            docker push umeshvjti/auth-service:${CIRCLE_SHA1}
+      - run:
+          name: Deploy
+          command: |
+            eb deploy
 
 workflows:
   version: 2
   build-test-and-deploy:
     jobs:
-      - setup
-      - test
-      - docker-build-push
-      - aws-deploy
+      - build
