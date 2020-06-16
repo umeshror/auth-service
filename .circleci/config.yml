@@ -20,13 +20,13 @@ jobs:
             sudo pip install awsebcli --upgrade
 
       - restore_cache:
-          key: dep-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: dep-{{ .Branch }}-{{ checksum "Pipfile" }}
       - run:
           command: |
             sudo pip install pipenv
             pipenv install --system --ignore-pipfile --dev
       - save_cache:
-          key: deps-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: deps-{{ .Branch }}-{{ checksum "Pipfile" }}
           paths:
             - "venv"
 
