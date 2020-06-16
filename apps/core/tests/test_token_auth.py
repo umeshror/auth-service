@@ -28,5 +28,7 @@ class TestTokenAuthentication(APITestCase):
         """
         token = Token.objects.create(user=self.user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        self.user.is_staff = True
+        self.user.save()
         response = self.client.get(reverse('users-list'))
         self.assertEqual(response.status_code, 200)

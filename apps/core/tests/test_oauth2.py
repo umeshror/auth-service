@@ -43,6 +43,8 @@ class TestOAuth2(APITestCase):
                 'grant_type': 'password',
                 'username': self.user.username,
                 'password': 'admin123'}
+        self.user.is_staff = True
+        self.user.save()
 
         response = self.client.post(reverse("oauth2_provider:token"), data=data)
 
@@ -87,7 +89,8 @@ class TestOAuth2(APITestCase):
                               }
         response = self.client.post(reverse("oauth2_provider:token"), data=refresh_token_data)
         content = json.loads(response.content.decode("utf-8"))
-
+        self.user.is_staff = True
+        self.user.save()
         resp = self.client.get(reverse('users-list'),
                                HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']))
         self.assertEqual(resp.status_code, 200, resp.content)

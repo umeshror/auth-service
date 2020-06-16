@@ -25,6 +25,8 @@ class TestJWT(APITestCase):
         """
         Request with valid token should give HTTP 200
         """
+        self.user.is_staff = True
+        self.user.save()
         data = {'username': self.user.username,
                 'password': 'admin123'}
 
