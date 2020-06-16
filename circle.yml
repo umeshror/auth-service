@@ -45,7 +45,7 @@ jobs:
           name: Push
           command: |
             docker login -u$DOCKERHUB_LOGIN -p$DOCKERHUB_PASSWORD
-            docker tag umeshvjti/auth-service:latest mlabouardy/avengers:${CIRCLE_SHA1}
+            docker tag umeshvjti/auth-service:latest umeshvjti/auth-service:${CIRCLE_SHA1}
             docker push umeshvjti/auth-service:latest
             docker push umeshvjti/auth-service:${CIRCLE_SHA1}
 
