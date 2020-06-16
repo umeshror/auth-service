@@ -61,15 +61,5 @@ workflows:
     jobs:
       - setup
       - test
-          requires:
-            - setup
       - docker-build-push
-          requires:
-            - setup
       - aws-deploy
-          requires:
-            - docker-build-push
-          filters:
-            branches:
-              only:
-                - master
