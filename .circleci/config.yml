@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  setup:
+  build:
     working_directory: ~/app
     docker:
       - image: circleci/python:3.7
@@ -13,33 +13,26 @@ jobs:
       - run:
           name: Install ENV
           command: |
-            sudo apt-get update
-            sudo apt-get install python-pip python-dev build-essential
-            pipenv install --system --ignore-pipfile --dev
             PYTHONFAULTHANDLER=1
-
-      - run:
-          name: Install AWS CLI
-          command: |
             sudo apt-get update
-            sudo apt-get install -y awscli
-
-      - run:
-          name: Installing deployment dependencies
-          working_directory: /
-          command: |
-            sudo apt-get -y -qq update
-            sudo pip install --upgrade setuptools
+            sudo apt-get install python-pip python-dev build-essential setuptools
             sudo pip install awsebcli --upgrade
 
-  test:
-    steps:
+      - restore_cache:
+          key: dep-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      - run:
+          command: |
+            sudo pip install pipenv
+            pipenv install --system --ignore-pipfile --dev
+      - save_cache:
+          key: deps-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          paths:
+            - "venv"
+
       - run:
           name: Test
           command: python manage.py test
 
-  docker-deploy-image:
-    steps:
       - run:
           name: Build
           command: docker build -t umeshvjti/auth-service:latest .
@@ -51,8 +44,6 @@ jobs:
             docker tag umeshvjti/auth-service:latest umeshvjti/auth-service:${CIRCLE_SHA1}
             docker push umeshvjti/auth-service:latest
             docker push umeshvjti/auth-service:${CIRCLE_SHA1}
-  deploy-aws:
-    steps:
       - run:
           name: Deploy
           command: |
@@ -60,20 +51,10 @@ jobs:
 
 workflows:
   version: 2
-  build-test-and-deploy:
+  build:
     jobs:
-      - setup
-      - test:
-          requires:
-            - setup
-      - docker-deploy-image:
-          requires:
-            - setup
-      - deploy-aws:
-          requires:
-            - docker-deploy-image
+      - build:
           filters:
             branches:
               only:
                 - master
-                - develop
