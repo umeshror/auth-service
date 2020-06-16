@@ -21,7 +21,11 @@ from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
 
+from apps.landing_view import index
+
 urlpatterns = [
+    url(r'^$', index, name='index'),
+
     # path('api', include('apps.core.urls')),
     url('api/', include('apps.core.urls'), name='api_urls'),
     # auth
