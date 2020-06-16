@@ -38,7 +38,7 @@ jobs:
           name: Test
           command: python manage.py test
 
-  docker-build-push:
+  docker-deploy-image:
     steps:
       - run:
           name: Build
@@ -51,7 +51,7 @@ jobs:
             docker tag umeshvjti/auth-service:latest umeshvjti/auth-service:${CIRCLE_SHA1}
             docker push umeshvjti/auth-service:latest
             docker push umeshvjti/auth-service:${CIRCLE_SHA1}
-  aws-deploy:
+  deploy-aws:
     steps:
       - run:
           name: Deploy
@@ -63,6 +63,17 @@ workflows:
   build-test-and-deploy:
     jobs:
       - setup
-      - test
-      - docker-build-push
-      - aws-deploy
+      - test:
+          requires:
+            - setup
+      - docker-deploy-image:
+          requires:
+            - setup
+      - deploy-aws:
+          requires:
+            - docker-deploy-image
+          filters:
+            branches:
+              only:
+                - master
+                - develop
