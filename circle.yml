@@ -1,66 +1,21 @@
-version: 2
-jobs:
-  build:
-    working_directory: ~/app
-    docker:
-      - image: circleci/python:3.7
+version: 2.1
 
+orbs:
+  python: circleci/python@0.2.1
+
+jobs:
+  build-and-test:
+    executor: python/default
     steps:
       - checkout
-
-      - setup_remote_docker
-
+      - python/load-cache
+      - python/install-deps
+      - python/save-cache
       - run:
-         name: Install ENV
-         command: |
-          sudo apt-get update
-          sudo apt-get install python-pip python-dev build-essential
-          pipenv install --system --ignore-pipfile --dev
-          PYTHONFAULTHANDLER=1
-
-      - run:
-         name: Install AWS CLI
-         command: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
-
-      - run:
-          name: Installing deployment dependencies
-          working_directory: /
-          command: |
-            sudo apt-get -y -qq update
-            sudo pip install --upgrade setuptools
-            sudo pip install awsebcli --upgrade
-
-
-      - run:
+          command: ./manage.py test
           name: Test
-          command: python manage.py test
-
-      - run:
-          name: Build
-          command: docker build -t umeshvjti/auth-service:latest .
-
-      - run:
-          name: Push
-          command: |
-            docker login -u$DOCKERHUB_LOGIN -p$DOCKERHUB_PASSWORD
-            docker tag umeshvjti/auth-service:latest umeshvjti/auth-service:${CIRCLE_SHA1}
-            docker push umeshvjti/auth-service:latest
-            docker push umeshvjti/auth-service:${CIRCLE_SHA1}
-
-      - run:
-          name: Deploy
-          command: |
-            eb deploy auth-service-dev
 
 workflows:
-  version: 2
-  build:
+  main:
     jobs:
-      - deploy:
-          filters:
-            branches:
-              only:
-                - master
-
+      - build-and-test
