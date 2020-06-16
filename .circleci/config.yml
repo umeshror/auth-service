@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  setup:
     working_directory: ~/app
     docker:
       - image: circleci/python:3.7
@@ -11,18 +11,18 @@ jobs:
       - setup_remote_docker
 
       - run:
-         name: Install ENV
-         command: |
-          sudo apt-get update
-          sudo apt-get install python-pip python-dev build-essential
-          pipenv install --system --ignore-pipfile --dev
-          PYTHONFAULTHANDLER=1
+          name: Install ENV
+          command: |
+            sudo apt-get update
+            sudo apt-get install python-pip python-dev build-essential
+            pipenv install --system --ignore-pipfile --dev
+            PYTHONFAULTHANDLER=1
 
       - run:
-         name: Install AWS CLI
-         command: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
+          name: Install AWS CLI
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y awscli
 
       - run:
           name: Installing deployment dependencies
@@ -32,35 +32,43 @@ jobs:
             sudo pip install --upgrade setuptools
             sudo pip install awsebcli --upgrade
 
+  test:
+    - run:
+        name: Test
+        command: python manage.py test
 
-      - run:
-          name: Test
-          command: python manage.py test
+  docker-build-push:
+    - run:
+        name: Build
+        command: docker build -t umeshvjti/auth-service:latest .
 
-      - run:
-          name: Build
-          command: docker build -t umeshvjti/auth-service:latest .
-
-      - run:
-          name: Push
-          command: |
-            docker login -u$DOCKER_USER -p$DOCKER_PASS
-            docker tag umeshvjti/auth-service:latest umeshvjti/auth-service:${CIRCLE_SHA1}
-            docker push umeshvjti/auth-service:latest
-            docker push umeshvjti/auth-service:${CIRCLE_SHA1}
-
-      - run:
-          name: Deploy
-          command: |
-            eb deploy auth-service-dev
-
+    - run:
+        name: Push
+        command: |
+          docker login -u$DOCKER_USER -p$DOCKER_PASS
+          docker tag umeshvjti/auth-service:latest umeshvjti/auth-service:${CIRCLE_SHA1}
+          docker push umeshvjti/auth-service:latest
+          docker push umeshvjti/auth-service:${CIRCLE_SHA1}
+  aws-deploy:
+    - run:
+        name: Deploy
+        command: |
+          eb deploy
 workflows:
   version: 2
-  build:
+  build-test-and-deploy:
     jobs:
-      - build:
-          filters:
-            branches:
-              only:
-                - master
-
+      - setup
+      - test
+        requires:
+          - setup
+      - docker-build-push
+        requires:
+          - setup
+      - aws-deploy
+        requires:
+          - docker-build-push
+        filters:
+          branches:
+            only:
+              - master
