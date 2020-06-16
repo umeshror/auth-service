@@ -54,21 +54,22 @@ jobs:
         name: Deploy
         command: |
           eb deploy
+
 workflows:
   version: 2
   build-test-and-deploy:
     jobs:
       - setup
       - test
-        requires:
-          - setup
+          requires:
+            - setup
       - docker-build-push
-        requires:
-          - setup
+          requires:
+            - setup
       - aws-deploy
-        requires:
-          - docker-build-push
-        filters:
-          branches:
-            only:
-              - master
+          requires:
+            - docker-build-push
+          filters:
+            branches:
+              only:
+                - master
