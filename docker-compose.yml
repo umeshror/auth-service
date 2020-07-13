@@ -18,6 +18,8 @@ services:
     volumes:
       - .:/app
       - static_data:/srv
+    environment:
+      DATABASE: sqlite
     depends_on:
       - mysql
     expose:
