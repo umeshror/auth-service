@@ -110,6 +110,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:4200',
     'http://localhost:8080',
+    'http://auth-frontend-us2.s3-website-us-west-2.amazonaws.com'
 )
 
 if os.environ.get('DATABASE') == 'postgres':
