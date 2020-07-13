@@ -113,6 +113,16 @@ CORS_ORIGIN_WHITELIST = (
     'http://auth-frontend-us2.s3-website-us-west-2.amazonaws.com'
 )
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('RDS_DB_NAME', 'authdb'),
+        'USER': os.environ.get('RDS_USERNAME', 'auth_admin'),
+        'PASSWORD': os.environ.get('RDS_PASSWORD', 'auth_admin'),
+        'HOST': os.environ.get('RDS_HOSTNAME', 'localhost'),
+        'PORT': os.environ.get('RDS_PORT', '3306')}
+}
+
 if os.environ.get('DATABASE') == 'postgres':
     DATABASES = {
         'default': {
@@ -124,18 +134,8 @@ if os.environ.get('DATABASE') == 'postgres':
             'PORT': os.environ.get('DB_PORT'),
         }
     }
-elif os.environ.get('DATABASE') == 'mysql':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.environ.get('MYSQL_DATABASE', 'authdb'),
-            'USER': os.environ.get('MYSQL_USER', 'auth_admin'),
-            'PASSWORD': os.environ.get('MYSQL_ROOT_PASSWORD', 'auth_admin'),
-            'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
-            'PORT': os.environ.get('MYSQL_PORT', '3306')}
-    }
-else:
-    DATABASES = {
+elif os.environ.get('DATABASE') == 'sqlite':
+        DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
