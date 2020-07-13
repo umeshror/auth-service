@@ -135,6 +135,7 @@ elif os.environ.get('DATABASE') == 'mysql':
             'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
             'PORT': os.environ.get('MYSQL_PORT', '3306')}
     }
+
 else:
     DATABASES = {
         'default': {
