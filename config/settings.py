@@ -28,8 +28,8 @@ DEBUG = os.environ.get('DEBUG', True)
 ENV = os.environ.get('ENV', 'local')
 
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(" ")
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -110,9 +110,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:4200',
     'http://localhost:8080',
-    'https://d3lft8v2vm9ln0.cloudfront.net'
+    'd3lft8v2vm9ln0.cloudfront.net'
 )
-
 
 if os.environ.get('DATABASE') == 'postgres':
     DATABASES = {
@@ -187,3 +186,4 @@ if ENV == 'local':
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 else:
     STATIC_ROOT = '/srv/static/'
+SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
