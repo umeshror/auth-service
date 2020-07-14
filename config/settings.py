@@ -110,7 +110,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:4200',
     'http://localhost:8080',
-    'd3lft8v2vm9ln0.cloudfront.net'
+    'https://d3lft8v2vm9ln0.cloudfront.net'
 )
 
 if os.environ.get('DATABASE') == 'postgres':
@@ -135,13 +135,12 @@ elif os.environ.get('DATABASE') == 'mysql':
             'PORT': os.environ.get('MYSQL_PORT', '3306')}
     }
 
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -186,4 +185,3 @@ if ENV == 'local':
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 else:
     STATIC_ROOT = '/srv/static/'
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
