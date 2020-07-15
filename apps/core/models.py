@@ -1,15 +1,34 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
-    country_code = models.CharField('country code',
+    first_name = models.CharField(_('first name'), max_length=30, blank=False, null=False)
+
+    email = models.EmailField(_('email address'), unique=True, blank=False, null=False)
+
+    country_code = models.CharField(_('country code'),
+                                    blank=True,
                                     max_length=3,
                                     help_text='Country code of the phone number')
-    phone_number = models.CharField('phone number',
+    phone_number = models.CharField(_('phone number'),
                                     db_index=True,
+                                    blank=True,
                                     max_length=15,
                                     help_text='Include the country code. for the phone number')
+
+    profile_picture_url = models.URLField(blank=True, null=True, help_text='User profile picture url')
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
+
+    def save(self, *args, **kwargs):
+        """
+        Before saving change the username,
+        """
+        self.username = self.email
+        super(User, self).save(*args, **kwargs)
 
 
 class OneTimePassCode(models.Model):

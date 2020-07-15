@@ -21,6 +21,7 @@ from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_simplejwt.views import TokenVerifyView, TokenRefreshView, TokenObtainPairView
 
+from apps.core.views import GoogleAuthView
 from apps.landing_view import index
 
 urlpatterns = [
@@ -38,6 +39,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # oauth2_provider
     path('oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('google-auth/', GoogleAuthView.as_view(), name='google_auth'),  # add path for google authentication
 
 ]
 
