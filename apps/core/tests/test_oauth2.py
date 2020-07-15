@@ -15,7 +15,8 @@ class TestOAuth2(APITestCase):
                                              last_name="test_last_name",
                                              password='admin123',
                                              phone_number='+911234567890',
-                                             username="test_username")
+                                             username="test_username",
+                                             email="test_username@gmail.com")
 
         self.application = Application(
             name="Test Application",
@@ -41,7 +42,7 @@ class TestOAuth2(APITestCase):
         data = {'client_id': self.application.client_id,
                 'client_secret': self.application.client_secret,
                 'grant_type': 'password',
-                'username': self.user.username,
+                'username': self.user.email,
                 'password': 'admin123'}
         self.user.is_staff = True
         self.user.save()

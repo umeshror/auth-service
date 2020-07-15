@@ -11,7 +11,8 @@ class TestJWT(APITestCase):
         self.user = User.objects.create_user(first_name="test_name",
                                              last_name="test_last_name",
                                              password='admin123',
-                                             username="test_username")
+                                             username='test_username',
+                                             email="test_username@gmail.com")
 
     def test_401(self):
         """
@@ -27,7 +28,7 @@ class TestJWT(APITestCase):
         """
         self.user.is_staff = True
         self.user.save()
-        data = {'username': self.user.username,
+        data = {'email': self.user.email,
                 'password': 'admin123'}
 
         response = self.client.post(reverse("jwt_token_obtain_pair"), data=data)
@@ -43,7 +44,7 @@ class TestJWT(APITestCase):
         """
         Request with valid token should give HTTP 200
         """
-        data = {'username': self.user.username,
+        data = {'email': self.user.email,
                 'password': 'admin123'}
 
         response = self.client.post(reverse("jwt_token_obtain_pair"), data=data)
