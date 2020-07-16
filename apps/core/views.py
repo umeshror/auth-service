@@ -39,6 +39,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
                   'country_code', 'phone_number',
                   'profile_picture_url')
 
+    def validate_password(self, password):
+        return make_password(password)
+
 
 class UserCreateAPIView(CreateAPIView):
     queryset = User.objects.all()
@@ -75,7 +78,7 @@ class GoogleAuthView(APIView):
         except User.DoesNotExist:
             data = request.data
             # provider random default password
-            data['password'] = make_password(BaseUserManager().make_random_password())
+            data['password'] = BaseUserManager().make_random_password()
             ser = self.serializer_class(data=data)
             ser.is_valid(raise_exception=True)
             user = ser.save()
