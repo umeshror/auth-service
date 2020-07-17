@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from simple_history.models import HistoricalRecords
 
 
 class User(AbstractUser):
@@ -19,6 +20,9 @@ class User(AbstractUser):
                                     help_text='Include the country code. for the phone number')
 
     profile_picture_url = models.URLField(blank=True, null=True, help_text='User profile picture url')
+
+    history = HistoricalRecords()
+
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

@@ -1,10 +1,8 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import Group
-from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
 from rest_framework import serializers
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -14,19 +12,33 @@ from apps.core.models import User
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
+    password = serializers.CharField(write_only=True)
+    username = serializers.CharField(write_only=True)
+    id = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'password')
+        fields = (
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+            'password',
+            'username')
 
 
 class UserViewSet(ModelViewSet):
+    """
+    User API used for listing of users
+    and creating new user
+    This is Admin only API
+    Non staff user cant access this api.
+    Check openapi.yaml for detailed request/response body
+    """
     permission_classes = (IsAdminUser,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    http_method_names = ['get', 'post', 'head']
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -49,18 +61,6 @@ class UserCreateAPIView(CreateAPIView):
     permission_classes = (AllowAny,)
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Group
-        fields = ('name', 'id')
-
-
-class GroupViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, TokenHasReadWriteScope,)
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-
-
 class GoogleAuthView(APIView):
     permission_classes = (AllowAny,)
     serializer_class = UserCreateSerializer
@@ -74,11 +74,15 @@ class GoogleAuthView(APIView):
 
         # create user if not exist
         try:
-            user = User.objects.get(email=data['email'])
+            user = User.objects.get(email=data.get('email'))
         except User.DoesNotExist:
             data = request.data
-            # provider random default password
+
+            data._mutable = True
+           # provider random default password
             data['password'] = BaseUserManager().make_random_password()
+            data._mutable = False
+
             ser = self.serializer_class(data=data)
             ser.is_valid(raise_exception=True)
             user = ser.save()
