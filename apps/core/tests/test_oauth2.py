@@ -51,14 +51,18 @@ class TestOAuth2(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content.decode("utf-8"))
+        # use this access_token for further interactions
+        access_token = content['access_token']
+
         # get should pass as default scope will be set READ and WRITE
         resp = self.client.get(reverse('users-list'),
-                               HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']))
+                               HTTP_AUTHORIZATION="Bearer {}".format(access_token))
         self.assertEqual(resp.status_code, 200)
 
     def test_get_access_token_fail(self):
         """
         Get Access token with wrong client_id
+        It should fail and should give 401 : invalid_client error
         """
         data = {'client_id': 'ZYDPLLBWSK3MVQJSIYHB1OR2JXCY0X2C5UJ2QAR2MAAIT5Q',
                 'client_secret': self.application.client_secret,
@@ -74,12 +78,16 @@ class TestOAuth2(APITestCase):
     def test_get_refresh_token_pass(self):
         """
         Get Access token with client_id, client_secret and refresh_token
+
+        Now use this refresh token to get new Access Token so that we user
+        doesnt need to add username and password again
         """
         access_token_data = {'client_id': self.application.client_id,
                              'client_secret': self.application.client_secret,
                              'grant_type': 'password',  # grant_type is password now
                              'username': self.user.username,
                              'password': 'admin123'}
+
         response = self.client.post(reverse("oauth2_provider:token"), data=access_token_data)
         content = json.loads(response.content.decode("utf-8"))
 
@@ -111,13 +119,9 @@ class TestOAuth2(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content.decode("utf-8"))
-        # read should be successful
-        resp = self.client.get(reverse('groups-list'),
-                               HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']))
-        self.assertEqual(resp.status_code, 200, resp.content)
 
         # write should be fail
-        resp = self.client.post(reverse('groups-list'),
+        resp = self.client.post(reverse('users-list'),
                                 HTTP_AUTHORIZATION="Bearer {}".format(content['access_token']),
                                 data={'first_name': "test_name",
                                       'last_name': "test_last_name",

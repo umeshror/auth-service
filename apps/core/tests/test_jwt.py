@@ -14,7 +14,7 @@ class TestJWT(APITestCase):
                                              username='test_username',
                                              email="test_username@gmail.com")
 
-    def test_401(self):
+    def test_fail_request(self):
         """
         For any user without JWT Token auth should give HTTP 401 Unauthorized error
         :return:
@@ -22,7 +22,7 @@ class TestJWT(APITestCase):
         response = self.client.get(reverse('users-list'))
         self.assertEqual(response.status_code, 401)
 
-    def test_200(self):
+    def test_get_jwt_token(self):
         """
         Request with valid token should give HTTP 200
         """
