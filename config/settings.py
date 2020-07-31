@@ -28,6 +28,45 @@ ENV = os.environ.get('ENV', 'local')
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(" ")
 
+
+# =============================================================================
+# SMTP AND EMAIL API SETTINGS
+# =============================================================================
+
+
+if ENV == "local":
+    # default to console backend locally, print to terminal
+    EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+else:
+    # and email backend everywhere else
+    EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+
+# =============================================================================
+# TWILIO SETTINGS
+# =============================================================================
+
+TWILLIO = {
+    'ACCOUNT_SID': os.environ.get('TWILLIO_ACCOUNT_SID'),
+    'API_KEY_SID': os.environ.get('TWILLIO_API_KEY_SID'),
+    'API_KEY_SECRET': os.environ.get('TWILLIO_API_KEY_SECRET'),
+    'AUTH_TOKEN': os.environ.get('TWILLIO_AUTH_TOKEN'),
+}
+
+# =============================================================================
+# OTP
+# =============================================================================
+
+# valid for 10 mins
+OTP_VALIDITY_PERIOD = 10*60
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -109,11 +148,11 @@ TEMPLATES = [
 ]
 WSGI_APPLICATION = 'config.wsgi.application'
 
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:4200',
-    'http://localhost:8080',
-    'https://d3lft8v2vm9ln0.cloudfront.net'
-)
+CORS_ORIGIN_ALLOW_ALL = True
+
+# Database
+# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+
 
 if os.environ.get('DATABASE') == 'postgres':
     DATABASES = {
@@ -136,14 +175,13 @@ elif os.environ.get('DATABASE') == 'mysql':
             'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
             'PORT': os.environ.get('MYSQL_PORT', '3306')}
     }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 

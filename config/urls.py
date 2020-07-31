@@ -32,7 +32,7 @@ urlpatterns = [
     url('api/user/', include('apps.core.urls'), name='user_urls'),
 
     # User registration
-    path('api/user-create/', UserCreateAPIView.as_view(), name='user-create'),
+    url('api/user-create/', UserCreateAPIView.as_view(), name='user-create'),
 
     # Google User registration
     path('api/google-auth/', GoogleAuthView.as_view(), name='google_auth'),
