@@ -134,6 +134,13 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_celery_beat',
 
+    # Running Health Checks
+    'health_check',
+    'health_check.db',
+    'health_check.cache',
+    'health_check.contrib.celery',
+    'health_check.contrib.redis',  # required Redis broker
+
     # Local Apps
     'apps.core',
     'apps.chat',
@@ -260,11 +267,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATIC_URL = '/static/'
 
-if ENV == 'local':
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-else:
-    STATIC_ROOT = '/srv/static/'
+STATIC_ROOT = '/srv/static/'
