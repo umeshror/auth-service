@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: django-service
+              servicePort: 8000
+          - path: /flower
+            backend:
+              serviceName: flower-service
+              servicePort: 5555

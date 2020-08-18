@@ -1,0 +1,23 @@
+
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: django-collectstatic
+spec:
+  template:
+    spec:
+      containers:
+        - name: collectstatic
+          image: umeshvjti/auth-service:latest
+          imagePullPolicy: Always
+          command: ["/bin/sh"]
+          args: [ "-c", "python manage.py collectstatic --noinput"]
+          envFrom:
+          - configMapRef:
+              name: appconfig
+          - secretRef:
+              name: appsecrets
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: regcred
