@@ -16,6 +16,19 @@ from apps.core.utilities.sms_helper import send_templated_sms
 from apps.core.utilities.user_helper import get_jwt_token
 
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='get_full_name')
+    profile_pic = serializers.CharField(source='profile_picture_url')
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'name',
+            'profile_pic'
+        )
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     password = serializers.CharField(write_only=True)
     username = serializers.CharField(write_only=True)
@@ -123,7 +136,7 @@ class OTPGenerateView(APIView):
         email_template = 'email/otp/otp-generate.html'
 
         send_templated_email(user=user,
-                             subject="Holaskills One Time Password",
+                             subject="auth-service One Time Password",
                              template=email_template,
                              context={'otp_code': otp_code})
         send_templated_sms(user=user,
