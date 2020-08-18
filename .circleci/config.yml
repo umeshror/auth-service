@@ -105,7 +105,7 @@ jobs:
             gcloud auth activate-service-account --key-file ./gcloud-api-key.json
             gcloud config set project ${PROJECT_ID}
             gcloud auth configure-docker
-            gcloud container clusters get-credentials holamind-qa --zone us-central1-c --project k8-holamind
+            gcloud container clusters get-credentials ${PROJECT_ID} --zone ${PROJECT_ZONE} --project ${PROJECT}
 
 
       - run:
