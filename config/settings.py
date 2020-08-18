@@ -64,8 +64,7 @@ TWILLIO = {
 # =============================================================================
 
 # valid for 10 mins
-OTP_VALIDITY_PERIOD = 10*60
-
+OTP_VALIDITY_PERIOD = 10 * 60
 
 # Application definition
 
@@ -87,6 +86,7 @@ INSTALLED_APPS = [
 
     # Local Apps
     'apps.core',
+    'apps.chat',
 ]
 
 AUTH_USER_MODEL = 'core.User'
