@@ -1,1 +1,31 @@
 Visit admin page to add the data. And then API's to interact !!!
+
+
+<input type="text" id="te">
+<button id="12">send</button>
+<script>
+    var endpoint = 'ws://localhost:8000/messages/3/';
+
+    var socket = new WebSocket(endpoint);
+
+    socket.onmessage = function (e) {
+        console.log('message recieved', e.data)
+
+    };
+    socket.onopen = function (e) {
+        console.log('onopen', e)
+
+        // socket.send('Hello from web')
+        document.getElementById('12').onclick = function (e) {
+            var val = document.getElementById('te').value;
+            socket.send(JSON.stringify({'message': val}));
+            console.log('message sent', val)
+        }
+    };
+    socket.onerror = function (e) {
+        console.log('onerror', e)
+    };
+    socket.onclose = function (e) {
+        console.log('onclose', e)
+    };
+</script>
