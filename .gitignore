@@ -13,6 +13,7 @@ env/
 build
 logs
 CACHE
+db.sqlite3
 staticfiles/
 mysql_data/
 .ignore/
