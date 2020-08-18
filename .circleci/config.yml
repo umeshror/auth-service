@@ -1,65 +1,153 @@
 version: 2
+
+defaults: &defaults
+  working_directory: ~/app
+  docker:
+    - image: circleci/python:3.7.0
+
 jobs:
-  build:
+  build-env:
+    <<: *defaults
+    steps:
+      - checkout
+
+      - persist_to_workspace:
+          root: .
+          paths: .
+
+      - restore_cache:
+          keys:
+            - source-{{ .Branch }}--{{ checksum "Pipfile.lock" }}
+
+      - run:
+          name: Install Dependencies
+          command: |
+            sudo pip install pipenv
+            sudo pip install setuptools --upgrade
+            sudo pip install awsebcli --upgrade
+            export PIPENV_VENV_IN_PROJECT=~/app
+            pipenv install --dev
+
+      - save_cache:
+          key: source-{{ .Branch }}--{{ checksum "Pipfile.lock" }}
+          paths:
+            - ./.venv
+
+  unit_tests:
+    <<: *defaults
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: .
+
+      - restore_cache:
+          keys:
+            - source-{{ .Branch }}--{{ checksum "Pipfile.lock" }}
+
+      - run:
+          name: Run Unit Tests
+          command: |
+            pipenv run python manage.py test
+          environment:
+            DATABASE: sqlite
+
+      - store_test_results:
+          path: test-results
+
+      - store_artifacts:
+          path: test-results
+          destination: tr1
+
+  docker-build-push:
+    working_directory: ~/app
+
+    machine: true
+
+    steps:
+      - checkout
+
+      - run:
+          name: Docker login
+          command: docker login -u$DOCKER_USER -p$DOCKER_PASS
+
+      - run:
+          name: Docker Pull
+          command: docker pull umeshvjti/auth-service:latest
+
+      - run:
+          name: Docker Build
+          command: docker build -t umeshvjti/auth-service:latest --cache-from umeshvjti/auth-service:latest .
+
+      - run:
+          name: Docker tag
+          command: docker tag umeshvjti/auth-service:latest umeshvjti/auth-service:${CIRCLE_SHA1:0:6}
+
+      - run:
+          name: Docker Push
+          command: |
+            docker push umeshvjti/auth-service:latest
+            docker push umeshvjti/auth-service:${CIRCLE_SHA1:0:6}
+
+  deploy:
     working_directory: ~/app
     docker:
-      - image: circleci/python:3.7
-
+      - image: google/cloud-sdk
     steps:
       - checkout
 
       - setup_remote_docker
 
       - run:
-          name: Install ENV
+          name: Gcloud Auth
           command: |
-            PYTHONFAULTHANDLER=1
-            DATABASE=sqlite
-            sudo apt-get update
-            sudo apt-get install python-pip python-dev build-essential
-            sudo pip install setuptools --upgrade
-            sudo pip install awsebcli --upgrade
+            echo ${GOOGLE_AUTH} > ./gcloud-api-key.json
+            gcloud auth activate-service-account --key-file ./gcloud-api-key.json
+            gcloud config set project ${PROJECT_ID}
+            gcloud auth configure-docker
+            gcloud container clusters get-credentials holamind-qa --zone us-central1-c --project k8-holamind
 
-      - restore_cache:
-          key: dep-{{ .Branch }}-{{ checksum "Pipfile" }}
+
       - run:
+          name: Update deployment
           command: |
-            sudo pip install pipenv
-            pipenv install --system --ignore-pipfile --dev
-      - save_cache:
-          key: dep-{{ .Branch }}-{{ checksum "Pipfile" }}
-          paths:
-            - "venv"
+            kubectl version
+            kubectl set image deployment/django django=umeshvjti/auth-service:${CIRCLE_SHA1:0:6}
+            kubectl set image deployment/celery-worker celery-worker=umeshvjti/auth-service:${CIRCLE_SHA1:0:6}
+            kubectl set image deployment/celery-beat celery-beat=umeshvjti/auth-service:${CIRCLE_SHA1:0:6}
+            kubectl set image deployment/flower flower=umeshvjti/auth-service:${CIRCLE_SHA1:0:6}
+            kubectl rollout status deployment/django
+            kubectl rollout status deployment/celery-worker
 
       - run:
-          name: Test
-          command: python manage.py test
-          environment:
-              DATABASE: sqlite
-
-
-      - run:
-          name: Build
-          command: docker build -t umeshvjti/auth-service:latest .
-
-      - run:
-          name: Push
+          name: Migrate DB
           command: |
-            docker login -u$DOCKER_USER -p$DOCKER_PASS
-            docker tag umeshvjti/auth-service:latest umeshvjti/auth-service:${CIRCLE_SHA1}
-            docker push umeshvjti/auth-service:latest
-            docker push umeshvjti/auth-service:${CIRCLE_SHA1}
+            kubectl delete job django-migrations --ignore-not-found=true
+            kubectl apply -f ./deploy/migration-job.yaml
+
       - run:
-          name: Deploy
+          name: Collectstatic
           command: |
-            eb deploy
+            kubectl delete job django-collectstatic --ignore-not-found=true
+            kubectl apply -f ./deploy/collectstatic-job.yaml
 
 workflows:
   version: 2
-  build:
+  build_and_test:
     jobs:
-      - build:
+      - build-env
+      - unit_tests:
+          requires:
+            - build-env
+      - docker-build-push:
+          requires:
+            - unit_tests
+      - deploy:
+          requires:
+            - docker-build-push
           filters:
             branches:
               only:
                 - master
+                - qa
+
