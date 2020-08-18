@@ -24,7 +24,10 @@ werkzeug = "*"
 ipython = "*"
 channels = "*"
 channels-redis = "*"
+celery = "*"
+redis = "*"
 psycopg2 = "*"
+django-redis = "*"
 
 [requires]
 python_version = "3.7"
