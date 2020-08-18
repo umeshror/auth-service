@@ -16,6 +16,7 @@ CACHE
 db.sqlite3
 staticfiles/
 mysql_data/
+static_data/
 .ignore/
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
