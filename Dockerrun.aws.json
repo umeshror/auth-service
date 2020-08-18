@@ -1,12 +1,12 @@
 {
- "AWSEBDockerrunVersion": "1",
- "Image": {
-   "Name": "umeshvjti/auth-service",
-   "Update": "true"
- },
- "Ports": [
-   {
-     "ContainerPort": "8000"
-   }
- ]
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "umeshvjti/auth-service",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": "8000"
+    }
+  ]
 }
