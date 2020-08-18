@@ -58,6 +58,40 @@ TWILLIO = {
     'API_KEY_SECRET': os.environ.get('TWILLIO_API_KEY_SECRET'),
     'AUTH_TOKEN': os.environ.get('TWILLIO_AUTH_TOKEN'),
 }
+# =============================================================================
+# REDIS
+# =============================================================================
+
+
+REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
+REDIS_PORT = os.environ.get('REDIS_PORT', 6379)
+
+REDIS_URL = "redis://{host}:{port}".format(
+    host=REDIS_HOST,
+    port=REDIS_PORT
+)
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "example"
+    }
+}
+
+
+# =============================================================================
+# CELERY
+# =============================================================================
+
+CELERY_BROKER_URL = 'redis://{}:{}'.format(REDIS_HOST, REDIS_PORT)
+CELERY_RESULT_BACKEND = 'redis://{}:{}'.format(REDIS_HOST, REDIS_PORT)
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 # =============================================================================
 # Django channels : CHAT app
@@ -98,6 +132,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'simple_history',
     'django_extensions',
+    'django_celery_beat',
 
     # Local Apps
     'apps.core',
@@ -164,32 +199,25 @@ TEMPLATES = [
 ]
 WSGI_APPLICATION = 'config.wsgi.application'
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:4200',
+    'http://localhost:8080',
+    'https://d3lft8v2vm9ln0.cloudfront.net'
+)
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-
 if os.environ.get('DATABASE') == 'postgres':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ.get('DB_DATABASE_NAME'),
-            'USER': os.environ.get('DB_USERNAME'),
-            'PASSWORD': os.environ.get('DB_PASSWORD'),
-            'HOST': os.environ.get('DB_HOST'),
-            'PORT': os.environ.get('DB_PORT'),
+            'NAME': os.environ.get('POSTGRES_DB', 'skillsdb'),
+            'USER': os.environ.get('POSTGRES_USER', 'db_admin'),
+            'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'postgres'),
+            'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
+            'PORT': os.environ.get('POSTGRES_PORT', 5432),
         }
-    }
-elif os.environ.get('DATABASE') == 'mysql':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.environ.get('MYSQL_DATABASE', 'auth_db'),
-            'USER': os.environ.get('MYSQL_USER', 'auth_admin'),
-            'PASSWORD': os.environ.get('MYSQL_ROOT_PASSWORD', 'auth_admin'),
-            'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
-            'PORT': os.environ.get('MYSQL_PORT', '3306')}
     }
 else:
     DATABASES = {
@@ -198,6 +226,7 @@ else:
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 

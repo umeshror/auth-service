@@ -26,6 +26,8 @@ channels = "*"
 channels-redis = "*"
 celery = "*"
 redis = "*"
+django-celery-beat = "*"
+flower = "*"
 psycopg2 = "*"
 django-redis = "*"
 
