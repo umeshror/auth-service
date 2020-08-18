@@ -60,6 +60,20 @@ TWILLIO = {
 }
 
 # =============================================================================
+# Django channels : CHAT app
+# =============================================================================
+
+USER_ONLINE_TIMEOUT = 300
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(REDIS_HOST, REDIS_PORT)]
+        }
+    }
+}
+
+# =============================================================================
 # OTP
 # =============================================================================
 
@@ -75,9 +89,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
 
     # Third-Party Apps
+    'channels',
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     'oauth2_provider',
@@ -126,6 +141,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+ASGI_APPLICATION = "config.routing.application"
 
 TEMPLATES = [
     {

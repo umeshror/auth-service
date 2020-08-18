@@ -22,6 +22,9 @@ factory-boy = "*"
 django-cors-headers = "*"
 werkzeug = "*"
 ipython = "*"
+channels = "*"
+channels-redis = "*"
+psycopg2 = "*"
 
 [requires]
 python_version = "3.7"
