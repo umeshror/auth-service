@@ -28,6 +28,9 @@ from apps.landing_view import index
 urlpatterns = [
     url(r'^$', index, name='index'),
 
+    # Chat APIs
+    url('api/chat/', include('apps.chat.urls'), name='chat_urls'),
+
     # User APIs
     url('api/user/', include('apps.core.urls'), name='user_urls'),
 
@@ -50,6 +53,9 @@ urlpatterns = [
 
     # Ouath2 authentication
     path('oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+
+    # Health check
+    url(r'^health/', include('health_check.urls')),
 
 ]
 
