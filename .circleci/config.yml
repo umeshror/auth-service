@@ -89,7 +89,7 @@ jobs:
             docker push umeshvjti/auth-service:latest
             docker push umeshvjti/auth-service:${CIRCLE_SHA1:0:6}
 
-  deploy:
+  gcp-deploy:
     working_directory: ~/app
     docker:
       - image: google/cloud-sdk
@@ -131,6 +131,26 @@ jobs:
             kubectl delete job django-collectstatic --ignore-not-found=true
             kubectl apply -f ./deploy/collectstatic-job.yaml
 
+
+  aws-deploy:
+    working_directory: ~/app
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+
+      - run:
+          name: Install ENV
+          command: |
+            DATABASE=sqlite
+            sudo pip install setuptools --upgrade
+            sudo pip install awsebcli --upgrade
+
+      - run:
+          name: Deploy
+          command: |
+            eb deploy
+
 workflows:
   version: 2
   build_and_test:
@@ -142,7 +162,7 @@ workflows:
       - docker-build-push:
           requires:
             - unit_tests
-      - deploy:
+      - gcp-deploy:
           requires:
             - docker-build-push
           filters:
@@ -150,4 +170,3 @@ workflows:
               only:
                 - master
                 - qa
-
