@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: appconfig
+data:
+  ENV: 'local'
+  REDIS_HOST: 'redis-service'
+  REDIS_PORT: '6379'
+  DATABASE: 'postgres'
+  POSTGRES_DB: 'skillsdb'
+  POSTGRES_USER: 'db_admin'
+  POSTGRES_HOST: 'postgres-service'
+  POSTGRES_PORT: '5432'
+  EMAIL_HOST_USER: 'postmaster@sandbox91sd37c32342ab4132WEba34abe9765b0313sss.mailgun.org'
+  DEFAULT_FROM_EMAIL: 'sarukumesh1@gmail.com'
+  DEBUG: 'True'

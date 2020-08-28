@@ -1,0 +1,51 @@
+
+# Flower Service
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: flower-service
+spec:
+  selector:
+    pod: celery-flower
+  ports:
+  - port: 5555
+  type: NodePort
+
+---
+
+# Flower Deployment
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flower
+  labels:
+    deployment: flower
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod: celery-flower
+  template:
+    metadata:
+      labels:
+        pod: celery-flower
+    spec:
+      containers:
+      - name: flower
+        image: umeshvjti/auth-service:latest
+        imagePullPolicy: Always
+        command: ["flower", "-A", "config", "--port=5555", "--address=0.0.0.0",  "-l=info"]
+        ports:
+          - containerPort: 5555
+        envFrom:
+          - configMapRef:
+              name: appconfig
+          - secretRef:
+              name: appsecrets
+        resources:
+          limits:
+            cpu: 100m
+      imagePullSecrets:
+      - name: regcred
