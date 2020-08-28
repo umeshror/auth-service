@@ -17,5 +17,3 @@ spec:
           - secretRef:
               name: appsecrets
       restartPolicy: Never
-      imagePullSecrets:
-      - name: regcred

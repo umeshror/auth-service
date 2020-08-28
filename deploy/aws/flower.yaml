@@ -47,5 +47,3 @@ spec:
         resources:
           limits:
             cpu: 100m
-      imagePullSecrets:
-      - name: regcred
